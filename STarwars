@@ -1,0 +1,166 @@
+import math
+import time
+import pygame
+import sys
+pygame.init()
+w = 1000
+h = 850
+screen = pygame.display.set_mode((w,h))
+fps = pygame.time.Clock()
+run = True
+star1 = pygame.Rect(100, 50, 80, 20)
+star2 = pygame.Rect(450, 50, 80, 20)
+star3 = pygame.Rect(800, 50, 80, 20)
+spaceship = pygame.Rect(500, 500, 20, 20)
+bullet = pygame.Rect(500,500,20,20)
+bulliet = pygame.Rect(500,500,20,20)
+
+gun = False
+gun1 = False
+bullet1 = pygame.Rect(450, 50, 80, 20)
+bullet2 = pygame.Rect(100, 50, 80, 20)
+bullet3 = pygame.Rect(800, 50, 80, 20)
+
+shat = False
+shat2 = False
+shat3 = False
+font = pygame.font.SysFont(None,30)
+font2 = pygame.font.SysFont(None,100)
+font3 = pygame.font.SysFont(None,60)
+
+bg = pygame.image.load('space .png').convert()
+bg_h= bg.get_height()
+tiles = math.ceil(h/bg_h)+1
+scroll = 0
+amu= 3
+s = False
+def gameover():
+    if amu == 0:
+        screen.fill('red')
+        gemover = font2.render("GAMEOVER", True, 'blue')
+        screen.blit(gemover, (317,350))
+        pygame.display.flip()
+        time.sleep(2)
+        sys.exit()
+        quit()
+def scoree():
+    global ammo,amu
+    score_f = font.render('ammo: '+str(amu),True,'red')
+    screen.blit(score_f,(400,400))
+def enemy():
+    global shat,amu,gun,gun1
+    global bullet
+    if run == True:
+        shat = True
+        if shat == True:
+            bullet1.y += 1
+    if bullet.colliderect(bullet1):
+        gun = False
+        amu +=1
+        bullet1.x = star1.x
+        bullet1.y = star1.y
+    if bulliet.colliderect(bullet1):
+        gun1 = False
+        amu +=1
+        bullet1.x = star1.x
+        bullet1.y = star1.y
+def enemy1():
+    global shat2,amu,gun,gun1
+    global bullet
+    if run == True:
+        shat2 = True
+        if shat3 == True:
+            bullet2.y += 1
+    if bullet.colliderect(bullet2):
+        gun = False
+        amu +=1
+        bullet2.x = star2.x
+        bullet2.y = star2.y
+    if bulliet.colliderect(bullet2):
+        gun1 = False
+        amu +=1
+        bullet2.x = star2.x
+        bullet2.y = star2.y
+
+def enemy2():
+    global shat3,amu,gun,gun1
+    global bullet
+    if run == True:
+        shat3 = True
+        if shat3 == True:
+            bullet3.y += 1
+    if bullet.colliderect(bullet3):
+        gun = False
+        amu +=1
+        bullet3.x = star3.x
+        bullet3.y = star3.y
+    if bulliet.colliderect(bullet3):
+        gun1 = False
+        amu +=1
+        bullet3.x = star3.x
+        bullet3.y = star3.y
+
+def shoot():
+    global gun, bullet, ammo,amu
+    if gun == True:
+        pygame.draw.rect(screen, 'red', bullet)
+        bullet.y -= 10
+        if bullet.y <100:
+            gun = False
+            amu -=1
+        if bullet.colliderect(bullet1):
+            gun = False
+    elif gun == False:
+        bullet.x = spaceship.x
+        bullet.y = spaceship.y
+
+def shoot1():
+    global gun1, bulliet,amu,s
+    if gun1 == True:
+        s = True
+        pygame.draw.rect(screen, 'red', bulliet)
+        bulliet.y += 6
+        if bulliet.y >800:
+            gun1 = False
+            amu -= 1
+
+    elif gun1 == False:
+        bulliet.x = spaceship.x
+        bulliet.y = spaceship.y
+
+while run:
+    for pos in range(0,tiles):
+        screen.blit(bg,(0,pos*bg_h+scroll))
+    scroll-=5
+    if abs(scroll)>h:
+        scroll = 0
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+    pygame.draw.rect(screen, 'green', star1)
+    pygame.draw.rect(screen, 'green', star2)
+    pygame.draw.rect(screen, 'green', star3)
+    pygame.draw.rect(screen, 'blue', spaceship)
+    pygame.draw.rect(screen, 'white', bullet1)
+    pygame.draw.rect(screen, 'white', bullet2)
+    pygame.draw.rect(screen, 'white', bullet3)
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RIGHT]:
+        spaceship.x += 5
+    if keys[pygame.K_LEFT]:
+        spaceship.x -= 5
+    if keys[pygame.K_UP]:
+        gun = True
+    if keys[pygame.K_DOWN]:
+        gun1 = True
+    gameover()
+    shoot()
+    shoot1()
+    enemy1()
+    enemy2()
+    enemy()
+    scoree()
+    pygame.display.update()
+    pygame.display.flip()
+    fps.tick(150)
+pygame.quit()
